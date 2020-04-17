@@ -1,10 +1,10 @@
 {
-    "bot_token": "1143211563:AAFcvf_L-VX92HJiuw_bQcB628Eft-817SI",
+    "bot_token": "",
     "bot_polling": true,
     "logs_cache_max": 100,
     "ottd":{
-        "host": "217.182.50.167",
-        "user": "Bot",
-        "psw": "bananarama"
+        "host": "",
+        "user": "",
+        "psw": ""
     }
 }

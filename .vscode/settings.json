@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.deploySubpath": "",
+    "appService.defaultWebAppToDeploy": "/subscriptions/49f9283b-a956-4e80-98e9-643ccb8586e8/resourceGroups/test/providers/Microsoft.Web/sites/evogps-telegram-bot"
+}

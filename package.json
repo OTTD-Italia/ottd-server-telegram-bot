@@ -1,0 +1,35 @@
+{
+  "name": "ottd-server-telegram-bot",
+  "version": "1.0.0",
+  "main": "app.js",
+  "dependencies": {
+    "config": "^3.2.5",
+    "express": "^4.17.1",
+    "express-basic-auth": "^1.2.0",
+    "lodash": "^4.17.15",
+    "lowdb": "^1.0.0",
+    "moment": "^2.24.0",
+    "node-openttd-admin": "^0.2.4",
+    "node-telegram-bot-api": "^0.40.0",
+    "request": "^2.88.2",
+    "socket.io": "^2.3.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "lvisentin",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OTTD-Italia/ottd-server-telegram-bot.git"
+  },
+  "keywords": [
+    "ottd"
+  ],
+  "bugs": {
+    "url": "https://github.com/OTTD-Italia/ottd-server-telegram-bot/issues"
+  },
+  "homepage": "https://github.com/OTTD-Italia/ottd-server-telegram-bot#readme",
+  "description": ""
+}

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .log {
+            margin-top: 10px;
+            font-size: 12px;
+        }
+
+        .log.disconnect {
+            color: red;
+        }
+    </style>
+    <script>
+
+        var socket = io();
+
+        socket.on('log', function (msg) {
+            log(msg);
+        });
+
+        socket.on('log_cache', function (msg) {
+            for (var i = 0; i < msg.length; i++) {
+                log(msg[i]);
+            }
+        });
+
+        socket.on('disconnect', () => {
+            $('#log').append($("<div class='log disconnect'>").text("Disconnect from LOG service"));
+        });
+
+        function log(msg) {
+            console.log(msg);
+            $('#log').append($("<div class='log'>").text(msg));
+        }
+
+    </script>
+</head>
+
+<body>
+    <div id='log'>
+
+    </div>
+
+</body>
+
+</html>

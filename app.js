@@ -1,6 +1,7 @@
 var isdebug = typeof v8debug === 'object' || /--debug|--inspect/.test(process.execArgv.join(' '));
 process.env["NODE_ENV"] = isdebug ? "debug" : "production"; // Variabile per la scelta del file config
 
+const fs = require('fs');
 const config = require('config');
 const _ = require('lodash');
 const moment = require('moment');
@@ -10,6 +11,8 @@ var app = require('express')();
 var http = require('http').createServer(app);
 var ottd = require("node-openttd-admin"),
     ottdConnection = new ottd.connection();
+
+let credentials = JSON.parse(fs.readFileSync('credentials.json'));
 
 // LowDb
 const low = require('lowdb')
@@ -46,15 +49,10 @@ app.get('/', function (req, res) {
 });
 
 // LOG page
-app.get('/log', function (req, res) {
-    if (req.query.token == "evomatic") {
-        res.sendFile('log.html', {
-            root: __dirname
-        });
-    } else {
-        res.send("Servizio non disponibile");
-    }
-
+app.get('/log', function (req, res) {   
+    res.sendFile('log.html', {
+        root: __dirname
+    });
 });
 
 //Si mette in ascolto sulla porta specificata (per app service azure)
@@ -68,7 +66,7 @@ http.listen(process.env.PORT || 3000, function () {
 var bot_options = {
     polling: config.get("bot_polling")
 };
-const bot = new TelegramBot(config.get("bot_token"), bot_options);
+const bot = new TelegramBot(credentials["telegram"], bot_options);
 
 debugLog("Telegram bot inizializzato (" + JSON.stringify(bot_options) + ")");
 
@@ -79,14 +77,6 @@ bot.on('message', (msg) => {
 
     console.log(msg);
 
-    const chatId = msg.chat.id;
-    var user = "";
-    if (msg.chat.first_name && msg.chat.last_name) {
-        user = msg.chat.first_name + " " + msg.chat.last_name;
-    } else if (msg.chat.title) {
-        user = msg.chat.title;
-    }
-
     debugLog("[" + msg.chat.id + "] > " + msg.text);
 
     if (!msg.text) return;
@@ -96,7 +86,6 @@ bot.on('message', (msg) => {
     // Gestione comandi
     switch (msg.text) {
         case "/start":
-
             var chat = db.get('chats') // verifica se è già stato salvato l'id della chat
                 .find({
                     id: msg.chat.id
@@ -104,9 +93,7 @@ bot.on('message', (msg) => {
                 .value();
 
             if (!chat) {
-                db.get('chats')
-                    .push(msg.chat)
-                    .write()
+                db.get('chats').push(msg.chat).write()
             }
 
             break;
@@ -138,8 +125,6 @@ bot.on('message', (msg) => {
                 case "/clients":
                     ottdConnection.send_rcon("clients");
                     break;
-        case "/rick":
-            bot.sendVideo(chatId, "https://media2.giphy.com/media/5kq0GCjHA8Rwc/giphy.gif");
             break;
         default:
             console.log(msg.text);
@@ -170,11 +155,10 @@ function debugLog(msg) {
 
 
 // OpenTTD
-
-ottdConnection.connect(config.get("ottd").get("host"), 3977);
+ottdConnection.connect(credentials["ottd"]["host"], credentials["ottd"]["admin_port"]);
 
 ottdConnection.on('connect', function () {
-    ottdConnection.authenticate(config.get("ottd").get("user"), config.get("ottd").get("psw"));
+    ottdConnection.authenticate(credentials["ottd"]["admin_user"], credentials["ottd"]["admin_psw"]);
 });
 
 ottdConnection.on('welcome', function (data) {

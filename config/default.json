@@ -1,10 +1,4 @@
-{
-    "bot_token": "",
+{    
     "bot_polling": true,
-    "logs_cache_max": 100,
-    "ottd":{
-        "host": "",
-        "user": "",
-        "psw": ""
-    }
+    "logs_cache_max": 100    
 }

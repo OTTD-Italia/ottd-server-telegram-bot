@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    <link rel="stylesheet" href="//cdn.materialdesignicons.com/5.1.45/css/materialdesignicons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            /* font-family: 'Courier New', Courier, monospace; */
+            font-family: 'Roboto Mono', monospace;
+            font-size: 16px;
+            background-color: #838583;
+            color: #FFFFFF;
+            text-shadow: 1px 1px #333;
+        }
+
+        #date {
+            display: inline-block;
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            padding: 3px 6px;
+            font-size: 16px;
+        }
+
+        .champion {
+            display: none;
+            font-size: 20px;
+        }
+
+        .champion.c0 {
+            display: inline-block;
+            color: #D4AF37;
+        }
+
+        .champion.c1 {
+            display: inline-block;
+            color: #C0C0C0;
+        }
+
+        .champion.c2 {
+            display: inline-block;
+            color: #A97142;
+        }
+
+        .table_economy {
+            border: 1px solid #555;
+            border-collapse: collapse;
+            border-spacing: 0px;;
+        }
+
+
+        .table_economy th {
+           background-color: #424242;      
+        }
+
+        .table_economy td {
+             border-bottom: 1px solid #555;
+            padding: 5px 20px;
+        }
+
+        .align_right {
+            text-align: right;
+        }
+    </style>
+    <script>
+
+        var companies = {};
+
+        var socket = io();
+
+        socket.on('date', function (msg) {
+            $("#date").html(moment(msg).format("DD MMM YYYY"));
+        });
+
+        socket.on('companies', function (msg) {
+            console.log(msg);
+            companies = msg
+            bindCompanies();
+        });
+
+        socket.on('connect', () => {
+            console.log("Connect to server");
+            socket.emit("companies");
+        });
+
+        socket.on('disconnect', () => {
+            console.log("Disconnect from server");
+        });
+
+        function bindCompanies() {
+            var html = [];
+
+            html.push("<table class='table_economy'>");
+            html.push("<tr >");
+            html.push("<th></td>");
+            html.push("<th>Name</td>");
+            html.push("<th></td>");
+            html.push("<th>Loan</td>");
+            html.push("<th>Money</td>");
+            html.push("<th>Value</td>");
+            html.push("</tr>");
+
+            _.chain(companies).sortBy(["economy.value"]).reverse().each(function (co, i) {
+                html.push("<tr class='company'>");
+                html.push("<td class=''><i class='mdi mdi-crown champion c" + i + "'></i></td>");
+                html.push("<td class=''><b>" + co.name + "</b></td>");
+                html.push("<td class=''><i class='mdi mdi-" + (co.ai ? "server" : "account") + "'></i></td>");
+                html.push("<td class='align_right'>" + new Intl.NumberFormat({ maximumSignificantDigits: 3 }).format(co.economy.loan) + "</td>");
+                html.push("<td class='align_right'>" + new Intl.NumberFormat({ maximumSignificantDigits: 3 }).format(co.economy.money) + "</td>");
+                html.push("<td class='align_right'>" + new Intl.NumberFormat({ maximumSignificantDigits: 3 }).format(co.economy.value) + "</td>");
+                html.push("</tr>");
+            }).value();
+
+            html.push("</table>");
+
+            $("#companies").html(html.join(""));
+        }
+
+    </script>
+</head>
+
+<body>
+    <div id='main_container'>
+        <div id='date'>
+
+        </div>
+
+        <div id='companies'>
+
+        </div>
+
+    </div>
+</body>
+
+</html>

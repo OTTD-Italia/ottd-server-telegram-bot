@@ -1,3 +1,11 @@
 {
-  "chats": []
+  "chats": [
+    {
+      "id": 125441984,
+      "first_name": "Lorenzo",
+      "last_name": "Visentin",
+      "type": "private",
+      "admin": true
+    }
+  ]
 }

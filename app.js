@@ -174,13 +174,28 @@ ottdConnection.on('welcome', function (data) {
     ottdConnection.send_update_frequency(ottd.enums.UpdateTypes.COMPANY_ECONOMY, ottd.enums.UpdateFrequencies.MONTHLY);
     
     //ottdConnection.send_rcon("clients");
-    //ottdConnection.send_rcon("companies");
+    ottdConnection.send_rcon("companies");
 
 });
 
 ottdConnection.on('rcon', function (data) {
     console.log("rcon", data);
-    sendMessage(data);
+    
+    // verifica se il messaggio contine info compagnia
+    if (data.output && data.output.indexOf("Company Name") >= 0){
+        var company = {
+            id: parseInt(data.output.substring(data.output.indexOf(":"), data.output.indexOf("(")).split(":")[1].trim()),
+            name: data.output.substring(data.output.indexOf("Company Name:"), data.output.indexOf("Year Founded:")).split(":")[1].trim().replace(/'/g,""),
+            money: parseInt(data.output.substring(data.output.indexOf("Money:"), data.output.indexOf("Loan:")).split(":")[1].trim()),
+            loan: parseInt(data.output.substring(data.output.indexOf("Loan:"), data.output.indexOf("Value:")).split(":")[1].trim()),
+            value: parseInt(data.output.substring(data.output.indexOf("Value:"), data.output.indexOf("(",data.output.indexOf("Value:"))).split(":")[1].trim()),
+        }
+        ottd_companies[company.id] = company;
+        console.log("ottd_companies", company);
+    }else{
+        sendMessage(data);
+    }
+
 });
 
 ottdConnection.on('date', function (data) {
@@ -232,6 +247,7 @@ ottdConnection.on('clientinfo', function (data) {
 
 ottdConnection.on('clientupdate', function (data) {
     console.log("clientupdate", data);
+
 });
 
 // COMPANY
@@ -242,10 +258,18 @@ ottdConnection.on('companyinfo', function (data) {
 
 ottdConnection.on('companyupdate', function (data) {
     console.log("companyupdate", data);
+    if(ottd_companies[data.id]){
+        _.merge(ottd_companies[data.id], data);
+        console.log(ottd_companies[data.id]);
+    }
 });
 
 ottdConnection.on('companyeconomy', function (data) {
     console.log("companyeconomy", data);
+    if(ottd_companies[data.id]){
+        _.merge(ottd_companies[data.id], data);
+        console.log(ottd_companies[data.id]);
+    }
 
 });
 

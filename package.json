@@ -9,7 +9,7 @@
     "fs": "0.0.1-security",
     "lodash": "^4.17.15",
     "lowdb": "^1.0.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "node-openttd-admin": "^0.2.4",
     "node-telegram-bot-api": "^0.40.0",
     "request": "^2.88.2",

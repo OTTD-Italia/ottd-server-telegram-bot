@@ -13,7 +13,7 @@
     "node-openttd-admin": "^0.2.4",
     "node-telegram-bot-api": "^0.40.0",
     "request": "^2.88.2",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.5.0"
   },
   "devDependencies": {},
   "scripts": {
